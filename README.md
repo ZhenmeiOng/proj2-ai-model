@@ -1,8 +1,8 @@
 ## After cloning this repo, run:
 
 ``` shell
-python -m venv llama-env  
-source llama-env/bin/activate 
+conda create -n llama-env python=3.10
+conda activate llama-env
 pip install -r requirements.txt
 ```
 
