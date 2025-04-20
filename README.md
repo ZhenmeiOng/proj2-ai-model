@@ -52,4 +52,3 @@ npm install
 npm run dev
 ```
 - then copy the link `http://localhost:5173/`
-- 
