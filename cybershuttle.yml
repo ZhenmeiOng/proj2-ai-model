@@ -1,0 +1,38 @@
+project:
+  name: "Deepseek Remote Execution"
+  description: "Executing deepseek model on remote HPC"
+  homepage: https://github.com/ZhenmeiOng/proj2-llama
+  authors:
+    - Yashkaran Chauhan
+    - Zhenmei Ong
+    - Varenya Amagowni
+  tags:
+    - airavata-courses
+    - spring-2025
+    - llm
+
+workspace:
+  location: /workspace
+  resources:
+    min_cpu: 4
+    min_gpu: 1
+    min_mem: 4096
+    gpu_mem: 1024
+  model_collection: []
+  data_collection:
+    - source: cybershuttle
+      identifier: airavata-courses-deepseek-chat
+      mount_point: /cybershuttle_data/airavata-courses-deepseek-chat
+
+additional_dependencies:
+  conda:
+    - python=3.10
+    - pip
+    - pandas
+    - numpy 
+    - matplotlib 
+    - seaborn
+    - scikit-learn
+    - joblib
+  pip:
+    - codecarbon
