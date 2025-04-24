@@ -40,3 +40,15 @@ brew install wget
 - choose the model variants: `7B,7B-chat`
 <br />
 I tried to run a simple python script but ran into many errors. but you guys can try to figure it out, or if you have a better solution, please let us know!
+
+## Running Frontend:
+```shell
+cd frontend
+```
+```shell
+npm install
+```
+```shell
+npm run dev
+```
+- then copy the link `http://localhost:5173/`
