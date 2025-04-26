@@ -52,7 +52,7 @@ uvicorn app:app --reload --host 0.0.0.0 --port 8000
 5. Submit a Job from Terminal using curl:
 	- open a second Terminal window (keep the first one running FastAPI server)
 	- cd to the `backend` directory again
-    - go to `slurm_cli.py` line ~24, add your username
+    - go to `slurm_cli.py` line ~24, add your username (IMPORTANT)
     - if you haven't got a SSH key, create one using:
 ```bash
 ssh-keygen -t rsa -b 4096 -C "gt-username@login-ice.pace.gatech.edu"
@@ -79,8 +79,10 @@ curl -X POST http://localhost:8000/jobs \
 uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ```
 2. run the frontend:
+    - on another terminal window,
     - cd to `frontend`:
 ```bash
+npm install
 npm run dev
 ```
 3. copy the address shown (should be http://localhost:5173/)
