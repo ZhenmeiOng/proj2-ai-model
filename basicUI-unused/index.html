@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DeepSeek Job Submitter</title>
+</head>
+<body>
+  <h1>DeepSeek Inference Portal</h1>
+
+  <label for="prompt">Prompt:</label><br>
+  <textarea id="prompt" rows="6" cols="60"></textarea><br><br>
+
+  <button onclick="submitJob()">Submit Job</button>
+
+  <h3 id="job-status" style="display:none;"></h3>
+
+  <button id="check-status-button" onclick="checkStatus()" style="display:none;">Check Status</button>
+
+  <script>
+    let currentJobId = "";
+
+    async function submitJob() {
+      const prompt = document.getElementById("prompt").value;
+
+      if (!prompt.trim()) {
+        alert("Please enter a prompt!");
+        return;
+      }
+
+      // Build the job script (simple template)
+      const script = `#!/bin/bash
+#SBATCH --job-name=deepseek_test    # Job name
+#SBATCH --output=dp%j.out    # Standard output file
+#SBATCH --error=dp%j.err     # Error file
+#SBATCH --partition=ice-gpu         # Partition name (check with 'sinfo' if needed)
+#SBATCH -N1 --gres=gpu:1       # Request 1 GPU
+#SBATCH --cpus-per-task=4           # Request 4 CPU cores
+#SBATCH --mem=32G                   # Request 16GB RAM
+#SBATCH --time=01:00:00             # Max job runtime (hh:mm:ss)
+#SBATCH --mail-type=END,FAIL        # Email notification (optional)
+#SBATCH --mail-user=ychauhan9@gatech.edu  # Replace with your email
+
+# Load necessary modules (modify as per your HPC environment)
+module load anaconda3  # If Conda is available
+source activate my_env  # Activate your Conda environment
+
+export HUGGINGFACE_TOKEN=$(cat /home/hice1/ychauhan9/scratch/hgtoken.env)
+
+# Run the DeepSeek Python script
+python seek_test.py`;
+
+      const response = await fetch("http://localhost:8000/jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ script: script })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        currentJobId = data.job_id;
+        document.getElementById("job-status").style.display = "block";
+        document.getElementById("check-status-button").style.display = "block";
+        document.getElementById("job-status").innerText = `Job submitted! ID: ${currentJobId}`;
+      } else {
+        alert("Error submitting job: " + data.detail);
+      }
+    }
+
+    async function checkStatus() {
+      if (!currentJobId) {
+        alert("No job ID to check!");
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8000/jobs/${currentJobId}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        document.getElementById("job-status").innerText = `Job ${currentJobId} is currently: ${data.state}`;
+      } else {
+        alert("Error checking job: " + data.detail);
+      }
+    }
+  </script>
+</body>
+</html>
