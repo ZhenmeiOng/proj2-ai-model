@@ -1,10 +1,19 @@
 # app.py
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from slurm_cli import submit, job_state, cancel, deepseek_infer
 
 app = FastAPI(title="Slurm CLI Gateway API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins (safe for localhost dev)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Prompt(BaseModel):
     prompt: str
