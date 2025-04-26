@@ -79,6 +79,7 @@ curl -X POST http://localhost:8000/jobs \
 uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ```
 2. run the frontend:
+    - on another terminal window,
     - cd to `frontend`:
 ```bash
 npm run dev
