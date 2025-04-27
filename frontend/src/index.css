@@ -82,3 +82,30 @@ textarea {
 h3 {
   color: #0077cc;
 } 
+
+.outputBox {
+  margin-top: 1rem;
+  padding: 1rem;
+  /* background-color: #f9f9f9; */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  color: #8d8d8d;
+  font-size: 1rem;
+  width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.outputBox pre {
+  white-space: pre-wrap;  /* Wraps text inside <pre> */
+  word-wrap: break-word;  /* Breaks long words */
+  overflow-wrap: break-word; 
+}
+
+

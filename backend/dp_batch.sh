@@ -8,7 +8,7 @@
 #SBATCH --mem=32G                   # Request 16GB RAM
 #SBATCH --time=01:00:00             # Max job runtime (hh:mm:ss)
 #SBATCH --mail-type=END,FAIL        # Email notification (optional)
-#SBATCH --mail-user=ychauhan9@gatech.edu  # Replace with your email
+#SBATCH --mail-user=mong31@gatech.edu  # Replace with your email
 
 # Load necessary modules (modify as per your HPC environment)
 module load anaconda3  # If Conda is available

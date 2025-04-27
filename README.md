@@ -9,6 +9,18 @@ conda create -n ai-model python=3.10
 conda activate ai-model
 pip install -r requirements.txt
 ```
+# Installing model to ICE
+- ssh to ICE
+- cd to `scratch` directory
+- make a new directory named `deepseek-model`
+- On another Terminal window, make sure you are in proj2 main directory, run 
+```bash
+scp -r install-deepseek.py username@login-ice.pace.gatech.edu:~/scratch/deepseek-model
+```
+- back to ICE Terminal window, cd to `deepseek-model`, you'll see `install-deepseek.py` inside, and run:
+```bash
+python install-deepseek.py
+```
 
 # A simple walkthrough: Run and Test the DeepSeek API
 ```scss
@@ -46,6 +58,11 @@ pip install -r requirements.txt
 2. cd to `backend` 
 3. Install Python packages: `pip install -r requirements.txt`
 4. Start the *FastAPI* server:
+    - before starting the server, go to `App.jsx` line ~30, and change to your email:
+```bash
+#SBATCH --mail-user=<username>@gatech.edu  # Replace with your email
+```
+    - now we can start the server:
 ```bash
 uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ```
