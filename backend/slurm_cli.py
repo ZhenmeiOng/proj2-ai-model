@@ -20,8 +20,7 @@ def _get_client() -> paramiko.SSHClient:
                 _client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 _client.connect(
                     hostname='login-ice.pace.gatech.edu',
-                    # username="ychauhan9",
-                    username="mong31",
+                    username="ychauhan9",
                     allow_agent=True,
                     look_for_keys=True
                 )
@@ -73,3 +72,21 @@ def cancel(job_id: str) -> None:
     err = stderr.read().decode()
     if err:
         raise RuntimeError(err)
+
+def get_output(job_id: str, prefix: str = "dp") -> str:
+    """
+    Fetch the SLURM job's stdout output file and return its contents.
+    By default, this reads 'dp<job_id>.out' in the submission directory.
+    """
+    ssh = _get_client()
+    filename = f"{prefix}{job_id}.out"
+    cmd = f"cat {shlex.quote(filename)}"
+    _, stdout, stderr = ssh.exec_command(cmd)
+    content = stdout.read().decode()
+    err = stderr.read().decode()
+    if err:
+        if "No such file or directory" in err:
+            raise FileNotFoundError(f"Output file '{filename}' not found.")
+        else:
+            raise RuntimeError(err)
+    return content
