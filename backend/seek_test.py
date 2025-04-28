@@ -20,7 +20,7 @@ parser.add_argument(
 parser.add_argument(
     "--model-dir",
     type=str,
-    default="/home/hice1/mong31/scratch/deepseek-model/models--deepseek-ai--deepseek-math-7b-instruct/snapshots/0a5828f800a36df0fd7f0ed581b983246c0677ff",
+    default="/home/hice1/mong31/scratch/deepseek-model",
     help="Path to the local DeepSeek model directory",
 )
 args = parser.parse_args()

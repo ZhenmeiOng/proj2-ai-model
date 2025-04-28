@@ -30,7 +30,7 @@ function App() {
 module load anaconda3  # If Conda is available
 source activate my_env  # Activate your Conda environment
 
-export HUGGINGFACE_TOKEN=$(cat /home/hice1/ychauhan9/scratch/hgtoken.env)
+export HUGGINGFACE_TOKEN=$(cat /home/hice1/mong31/scratch/hf-token.env)
 
 # Run the DeepSeek Python script
 python seek_test.py --prompt "${escapedPrompt}"`;
