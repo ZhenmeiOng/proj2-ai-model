@@ -1,5 +1,3 @@
-<img width="500" alt="Screenshot 2025-04-28 at 3 27 28 am" src="https://github.com/user-attachments/assets/7bff6a3a-a69e-4c2c-a0d5-b303f848c195" />
-
 Since we are using a different model now, I deleted the old environment and created a new one. I also updated `requirement.txt` which stores all the dependencies needed for our project.
 
 Ok, so what to do now:
@@ -105,6 +103,8 @@ npm install
 npm run dev
 ```
 3. copy the address shown (should be http://localhost:5173/)
+
+<img width="500" alt="Screenshot 2025-04-28 at 3 27 28 am" src="https://github.com/user-attachments/assets/7bff6a3a-a69e-4c2c-a0d5-b303f848c195" />
 
 Note: It'll take a while to see the output after clicking **Submit Job** button
 
