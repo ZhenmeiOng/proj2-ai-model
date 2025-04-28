@@ -104,6 +104,8 @@ npm run dev
 ```
 3. copy the address shown (should be http://localhost:5173/)
 
+<img width="500" alt="Screenshot 2025-04-28 at 3 27 28 am" src="https://github.com/user-attachments/assets/7bff6a3a-a69e-4c2c-a0d5-b303f848c195" />
+
 Note: It'll take a while to see the output after clicking **Submit Job** button
 
 # Deepspeed
@@ -116,3 +118,7 @@ Note: It'll take a while to see the output after clicking **Submit Job** button
 3. to run deepSpeed version:
     - run the same backend
     - but cd to `frontend-ds` before running `npm run dev`
+    - 
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/e0834b5b-b1a2-4d63-9915-abd9c207f6fa" />
+
+- for some reasons, it actually took longer than regular inference.
