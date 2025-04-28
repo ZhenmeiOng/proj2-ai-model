@@ -88,3 +88,6 @@ npm run dev
 3. copy the address shown (should be http://localhost:5173/)
 
 Note: It'll take a while to see the output after clicking **Submit Job** button
+
+# Cybershuttle
+To use the deepseek model in cybershuttle, change the prompt variable to the prompt that you want to have and then run the cells in sequential order.
