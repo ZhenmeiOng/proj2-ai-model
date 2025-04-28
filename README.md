@@ -119,5 +119,6 @@ Note: It'll take a while to see the output after clicking **Submit Job** button
     - run the same backend
     - but cd to `frontend-ds` before running `npm run dev`
     - 
-<img width="692" alt="image" src="https://github.com/user-attachments/assets/e0834b5b-b1a2-4d63-9915-abd9c207f6fa" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/e0834b5b-b1a2-4d63-9915-abd9c207f6fa" />
+
 - for some reasons, it actually took longer than regular inference.
