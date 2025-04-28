@@ -23,7 +23,7 @@ function App() {
 #SBATCH --partition=ice-gpu         # Partition name (check with 'sinfo' if needed)
 #SBATCH -N1 --gres=gpu:4       # Request 4 GPU
 #SBATCH --cpus-per-task=1           # Request 4 CPU cores
-#SBATCH --mem=32G                   # Request 16GB RAM
+#SBATCH --mem=200G                   # Request 16GB RAM
 #SBATCH --time=01:00:00             # Max job runtime (hh:mm:ss)
 
 # Load necessary modules (modify as per your HPC environment)

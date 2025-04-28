@@ -2,10 +2,22 @@
 
 # monkey-patch LlamaAttention so DS can find .num_heads
 from transformers.models.llama.modeling_llama import LlamaAttention
+# whenever someone does llama_attn.num_attention_heads → forward to config
+setattr(
+    LlamaAttention,
+    "num_attention_heads",
+    property(lambda self: self.config.num_attention_heads)
+)
+# and make num_heads an alias for the same thing
 setattr(
     LlamaAttention,
     "num_heads",
-    property(lambda self: self.num_attention_heads)
+    property(lambda self: self.config.num_attention_heads)
+)
+setattr(
+    LlamaAttention,
+    "rope_theta",
+    property(lambda self: getattr(self.config, "rope_theta", 10000.0))
 )
 
 import argparse
@@ -31,6 +43,14 @@ parser.add_argument(
 # ← add this so DS launcher args are swallowed:
 parser.add_argument("--local_rank", type=int, default=0, help="DeepSpeed process rank")
 args = parser.parse_args()
+
+if torch.cuda.is_available():
+    # bind this process to the GPU that DeepSpeed assigned via --local_rank
+    torch.cuda.set_device(args.local_rank)
+    device = torch.device("cuda")
+else:
+    device = torch.device("cpu")
+
 PROMPT = args.prompt
 MODEL_DIR = Path(args.model_dir)
  
@@ -42,22 +62,31 @@ if tokenizer.pad_token is None:
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.pad_token_id = tokenizer.eos_token_id
  
+ # ── 2a. Load generation config for chat/sampling settings ────────────────────
+generation_config = GenerationConfig.from_pretrained(
+    MODEL_DIR,
+    local_files_only=True
+)
+# ensure pad/eos are set
+generation_config.pad_token_id = tokenizer.pad_token_id
+generation_config.eos_token_id = tokenizer.eos_token_id
+
 # ── 3. Load the model (GPU if available, CPU fallback) ────────────────────────
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_DIR,
-    torch_dtype="auto",          # bf16/fp16 if the GPU supports it
-    device_map="auto",           # splits across GPUs if multiple are visible
-    low_cpu_mem_usage=True,      # streaming load to reduce RAM
+    torch_dtype=torch.bfloat16,          # bf16/fp16 if the GPU supports it
+    # device_map="auto",           # splits across GPUs if multiple are visible
+    # low_cpu_mem_usage=True,      # streaming load to reduce RAM
     local_files_only=True,
 )
- 
+
 # ── 4. Wrap with DeepSpeed inference ─────────────────────────────
 model = deepspeed.init_inference(
     model,  
-    mp_size=4,                       # single-GPU
+    mp_size=1,                       # single-GPU
     dtype=torch.bfloat16,            
     replace_method="auto",           
-    replace_with_kernel_inject=True  
+    replace_with_kernel_inject=True,
 )
 
 # ── 5. Build the chat template ────────────────────────────────────────────────
@@ -72,15 +101,25 @@ inputs = tokenizer.apply_chat_template(
 attention_mask = inputs.ne(tokenizer.pad_token_id).long()
  
 # Move tensors to the model device
-inputs, attention_mask = inputs.to(model.device), attention_mask.to(model.device)
+# inputs, attention_mask = inputs.to(model.device), attention_mask.to(model.device)
+inputs         = inputs.to(device)
+attention_mask = attention_mask.to(device)
 
-# ── 6. Generate ──────────────────────────────────────────────────
+
+# ── 6. Generate ────────────────────────────────────────────────
 with torch.no_grad():
     outputs = model.generate(
         input_ids=inputs,
         attention_mask=attention_mask,
-        max_new_tokens=128,
-        pad_token_id=tokenizer.eos_token_id
+
+        # ← use your loaded chat settings:
+        max_new_tokens       = generation_config.max_new_tokens,
+        do_sample            = generation_config.do_sample,
+        temperature          = generation_config.temperature,
+        top_p                = generation_config.top_p,
+        repetition_penalty   = generation_config.repetition_penalty,
+        eos_token_id         = generation_config.eos_token_id,
+        pad_token_id         = generation_config.pad_token_id,
     )
 
 # ── 7. Decode & print ────────────────────────────────────────────
@@ -88,7 +127,5 @@ reply = tokenizer.decode(
     outputs[0][inputs.shape[1]:],
     skip_special_tokens=True
 )
-print(reply.strip())
-
-
-# print("hello this is ds-seek-test")
+if args.local_rank == 0:
+    print("\nAssistant:", reply.strip())
