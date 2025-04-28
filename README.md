@@ -9,6 +9,18 @@ conda create -n ai-model python=3.10
 conda activate ai-model
 pip install -r requirements.txt
 ```
+# Installing model to ICE
+- ssh to ICE
+- cd to `scratch` directory
+- make a new directory named `deepseek-model`
+- On another Terminal window, make sure you are in proj2 main directory, run 
+```bash
+scp -r install-deepseek.py username@login-ice.pace.gatech.edu:~/scratch/deepseek-model
+```
+- back to ICE Terminal window, cd to `deepseek-model`, you'll see `install-deepseek.py` inside, and run:
+```bash
+python install-deepseek.py
+```
 
 # A simple walkthrough: Run and Test the DeepSeek API
 ```scss
@@ -46,6 +58,11 @@ pip install -r requirements.txt
 2. cd to `backend` 
 3. Install Python packages: `pip install -r requirements.txt`
 4. Start the *FastAPI* server:
+    - before starting the server, go to `App.jsx` line ~30, and change to your email:
+```bash
+#SBATCH --mail-user=<username>@gatech.edu  # Replace with your email
+```
+    - now we can start the server:
 ```bash
 uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ```
@@ -87,7 +104,21 @@ npm run dev
 ```
 3. copy the address shown (should be http://localhost:5173/)
 
+<img width="500" alt="Screenshot 2025-04-28 at 3 27 28 am" src="https://github.com/user-attachments/assets/7bff6a3a-a69e-4c2c-a0d5-b303f848c195" />
+
 Note: It'll take a while to see the output after clicking **Submit Job** button
 
-# Cybershuttle
-To use the deepseek model in cybershuttle, change the prompt variable to the prompt that you want to have and then run the cells in sequential order.
+# Deepspeed
+1. new file `ds-seek-test.py`:
+    - duplicate of `seek-test.py` but
+    - with the model wrapped in DeepSpeed
+2. New folder `frontend-ds`:
+    - duplicate of `frontend` but
+    - calls `ds-seek-test.py` in the SLURM script
+3. to run deepSpeed version:
+    - run the same backend
+    - but cd to `frontend-ds` before running `npm run dev`
+    - 
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/e0834b5b-b1a2-4d63-9915-abd9c207f6fa" />
+
+- for some reasons, it actually took longer than regular inference.
