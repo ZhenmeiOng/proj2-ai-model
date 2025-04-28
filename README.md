@@ -105,3 +105,14 @@ npm run dev
 3. copy the address shown (should be http://localhost:5173/)
 
 Note: It'll take a while to see the output after clicking **Submit Job** button
+
+# Deepspeed
+1. new file `ds-seek-test.py`:
+    - duplicate of `seek-test.py` but
+    - with the model wrapped in DeepSpeed
+2. New folder `frontend-ds`:
+    - duplicate of `frontend` but
+    - calls `ds-seek-test.py` in the SLURM script
+3. to run deepSpeed version:
+    - run the same backend
+    - but cd to `frontend-ds` before running `npm run dev`
