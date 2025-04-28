@@ -31,8 +31,27 @@ source activate my_env
 
 export HUGGINGFACE_TOKEN=$(cat /home/hice1/ychauhan9/scratch/hgtoken.env)
 
-python seek_test.py --prompt "${escapedPrompt}"
-`;
+python seek_test.py --prompt "${escapedPrompt}"`;
+
+    const script2 = `#!/bin/bash
+    #SBATCH --job-name=deepseek_test    # Job name
+    #SBATCH --output=./scratch/dp%j.out    # Standard output file
+    #SBATCH --error=./scratch/dp%j.err     # Error file
+    #SBATCH --partition=ice-gpu         # Partition name (check with 'sinfo' if needed)
+    #SBATCH -N1 --gres=gpu:4       # Request 4 GPU
+    #SBATCH --cpus-per-task=4           # Request 4 CPU cores
+    #SBATCH --mem=32G                   # Request 16GB RAM
+    #SBATCH --time=01:00:00             # Max job runtime (hh:mm:ss)
+    
+    # Load necessary modules (modify as per your HPC environment)
+    module load anaconda3  # If Conda is available
+    source activate my_env  # Activate your Conda environment
+    
+    export HUGGINGFACE_TOKEN=$(cat /home/hice1/ychauhan9/scratch/hgtoken.env)
+    
+    # Run the DeepSpeed
+    
+    deepspeed --num_gpus=4 --local_rank=1 ds-seek-test.py --prompt "${escapedPrompt}"`;
 
     const response = await fetch("http://localhost:8000/jobs", {
       method: "POST",
